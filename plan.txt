@@ -1,0 +1,6 @@
+struktura knihovny:
+
+1. hash: MD5 nebo/a SHA256; init(), update(), final()
+2. cipher: AES (CBC mode) ?; encrupt(), decrypt()
+3. keygen: std::random_device; generateKey(size_t size) AES256 32by, AES128 16by
+4. auth: HMAC (based on MD5); hmac(key, msg) -> mac 
