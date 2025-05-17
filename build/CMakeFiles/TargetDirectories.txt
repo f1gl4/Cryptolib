@@ -1,3 +1,0 @@
-/home/nikodema/Documents/Cryptolib/build/CMakeFiles/Cryptolib.dir
-/home/nikodema/Documents/Cryptolib/build/CMakeFiles/edit_cache.dir
-/home/nikodema/Documents/Cryptolib/build/CMakeFiles/rebuild_cache.dir
