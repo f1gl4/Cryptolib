@@ -50,13 +50,13 @@ Initialize constant values necessary for hashing:
 
 3. Functions **F(), G(), H(), I()**, which take 3 out of 4 variables as inputs and perform bitwise operations:
 
-F(uint32_t x, uint32_t y, uint32_t z) return (x & y) | (~x & z);
+   `F(uint32_t x, uint32_t y, uint32_t z) return (x & y) | (~x & z);`
 
-G(uint32_t x, uint32_t y, uint32_t z) return (x & z) | (~z & y);
+   `G(uint32_t x, uint32_t y, uint32_t z) return (x & z) | (~z & y);`
 
-H(uint32_t x, uint32_t y, uint32_t z) return x ^ y ^ z;
+   `H(uint32_t x, uint32_t y, uint32_t z) return x ^ y ^ z;`
 
-I(uint32_t x, uint32_t y, uint32_t z) return y ^ (~z | x);
+   `I(uint32_t x, uint32_t y, uint32_t z) return y ^ (~z | x);`
 
 
 Divide the data into 64-byte chunks and begin processing (as our data is only 64 bytes, there will be just 1 iteration).  
