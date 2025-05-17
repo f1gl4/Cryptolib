@@ -8,56 +8,117 @@
 
 static void print_usage() {
     std::cout << "Usage:\n"
-              << "crypto md5 <string>\n"
-              << "crypto sha1 <string>\n"
-              << "crypto keygen <length>\n"
-              << "crypto hmac-md5 <key> <string>\n"
-              << "crypto rsa gen <p> <q>\n"
-              << "crypto rsa encrypt <p> <q> <string>\n"
-              << "crypto rsa decrypt <p> <q> <string>\n";
+              << "./Cryptolib md5 <string>\n"
+              << "./Cryptolib sha1 <string>\n"
+              << "./Cryptolib keygen <length>\n"
+              << "./Cryptolib hmac-md5 <key> <string>\n"
+              << "./Cryptolib hmac-sha1 <key> <string>\n"
+              << "./Cryptolib rsa gen <p> <q>\n"
+              << "./Cryptolib rsa encrypt <p> <q> <string>\n"
+              << "./Cryptolib rsa decrypt <p> <q> <string>\n";
 }
 
 int main(int argc, char* argv[]) {
 
-    /*auto key128 = generateKey(16);
-    std::cout << "Random key (16 bytes): ";
-    print_hex_key(key128);
+    if (argc < 2)
+    {
+        print_usage();
+        return 1;
+    }
 
-    std::string msg = "hello world";
-    auto hmac = hmac_md5(key128, (const uint8_t*)msg.data(), msg.size());
-    std::cout << "HMAC(MD5) for msg = hello world: " << md5hash_to_string(hmac.data()) << std::endl;
+    std::string cmd = argv[1];
 
-    while (true) {
-        std::cout << "Input: ";
-        std::string s;
-        if (!std::getline(std::cin, s) || s.empty()) {
-            break;
+    // MD5 ------------------
+
+    if (cmd == "md5" && argc == 3)
+    {
+        const char* s = argv[2];
+        auto hash = MD5(reinterpret_cast<const uint8_t*>(s), std::strlen(s));
+        std::cout << md5hash_to_string(hash.data()) << std::endl;
+        return 0;
+    }
+
+    // SHA1 ------------------
+
+    if (cmd == "sha1" && argc == 3)
+    {
+        const char* s = argv[2];
+        auto hash = SHA1(reinterpret_cast<const uint8_t*>(s), std::strlen(s));
+        std::cout << sha1_to_hex(hash.data()) << std::endl;
+        return 0;
+    }
+
+    // KEY GENERATOR ------------------
+
+    if (cmd == "keygen" && argc == 3)
+    {
+        size_t len = std::stoul(argv[2]);
+        auto key = generateKey(len);
+        print_hex_key(key);
+        return 0;
+    }
+
+    // HMAC-MD5 ------------------
+
+    if (cmd == "hmac-md5" && argc == 4)
+    {
+        std::string keyStr = argv[2];
+        std::vector<uint8_t> key(keyStr.begin(), keyStr.end());
+        const char* msg = argv[3];
+        auto mac = hmac_md5(key, reinterpret_cast<const uint8_t*>(msg), std::strlen(msg));
+        std::cout << md5hash_to_string(mac.data()) << std::endl;
+        return 0;
+    }
+
+    // HMAC-SHA1 ------------------
+
+    if (cmd == "hmac-sha1" && argc == 4)
+    {
+        std::string keyStr = argv[2];
+        std::vector<uint8_t> key(keyStr.begin(), keyStr.end());
+        const char* msg = argv[3];
+        auto mac = hmac_sha1(key, reinterpret_cast<const uint8_t*>(msg), std::strlen(msg));
+        std::cout << sha1_to_hex(mac.data()) << std::endl;
+        return 0;
+    }
+
+    // RSA ------------------
+
+    if (cmd == "rsa" && argc >= 3) {
+        std::string sub = argv[2];
+
+        if (sub == "gen" && argc == 5) {
+            uint64_t p = std::stoull(argv[3]);
+            uint64_t q = std::stoull(argv[4]);
+            RSA rsa(p, q);
+            auto pub  = rsa.publicKey();
+            auto priv = rsa.privateKey();
+            std::cout << "n = " << pub.first << ", e = " << pub.second
+                      << ", d = " << priv.second << std::endl;
+            return 0;
         }
 
-        std::vector<uint8_t> hash = MD5((const uint8_t*)s.data(), s.size());
-        std::string hexStr = md5hash_to_string(hash.data());
+        if (sub == "encrypt" && argc == 6) {
+            uint64_t p = std::stoull(argv[3]);
+            uint64_t q = std::stoull(argv[4]);
+            std::string msg = argv[5];
+            RSA rsa(p, q);
+            auto cipher = rsa.encrypt(msg);
+            for (auto c : cipher) std::cout << c << ' ';
+            std::cout << std::endl;
+            return 0;
+        }
 
-        std::cout << "MD5 hash: " << hexStr << std::endl << std::endl;
-    }*/
-
-    /*RSA rsa(11, 13);
-    auto pub = rsa.publicKey();
-    auto prv = rsa.privateKey();
-    std::cout << "e = " << pub.second << "; d = " << prv.second << std::endl;
-
-    std::string msg = "hello";
-    auto enc = rsa.encrypt(msg);
-    auto dec = rsa.decrypt(enc);
-
-    std::cout << "ciphertext: ";
-    for (auto v : enc) std::cout << v << ' ';
-    std::cout << "\nplaintext: " << dec << '\n';*/
-
-    /*const std::string msg = "hello";
-    auto d = SHA1((const uint8_t*)msg.data(), msg.size());
-    std::cout << sha1_to_hex(d.data()) << '\n';*/
-
-
+        if (sub == "decrypt" && argc >= 6) {
+            uint64_t p = std::stoull(argv[3]);
+            uint64_t q = std::stoull(argv[4]);
+            std::vector<uint64_t> cipher;
+            for (int i = 5; i < argc; ++i) cipher.push_back(std::stoull(argv[i]));
+            RSA rsa(p, q);
+            std::cout << rsa.decrypt(cipher) << std::endl;
+            return 0;
+        }
+    }
 
     return 0;
 }
