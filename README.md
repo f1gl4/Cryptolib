@@ -51,9 +51,13 @@ Initialize constant values necessary for hashing:
 3. Functions **F(), G(), H(), I()**, which take 3 out of 4 variables as inputs and perform bitwise operations:
 
 F(uint32_t x, uint32_t y, uint32_t z) return (x & y) | (~x & z);
+
 G(uint32_t x, uint32_t y, uint32_t z) return (x & z) | (~z & y);
+
 H(uint32_t x, uint32_t y, uint32_t z) return x ^ y ^ z;
+
 I(uint32_t x, uint32_t y, uint32_t z) return y ^ (~z | x);
+
 
 Divide the data into 64-byte chunks and begin processing (as our data is only 64 bytes, there will be just 1 iteration).  
 On each iteration, save the values of `a`, `b`, `c`, and `d` to add them to the modified values at the end of the iteration:
@@ -98,7 +102,7 @@ Append the original message length as a 64-bit big-endian integer.
 3. Main loop in 80 rounds:
    
    ![image](https://github.com/user-attachments/assets/6910fd92-85fe-49ca-9ed4-c8c2a5189a31)
-5. Add chunk's hash to the result: h[0] += a; h[1] += b; h[2] += c; h[3] += d; h[4] += e;
+5. Add chunk's hash to the result: `h[0] += a; h[1] += b; h[2] += c; h[3] += d; h[4] += e;`
 
 
 RFC SHA-1: 
