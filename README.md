@@ -2,16 +2,20 @@
 
 This cryptographic library includes:
 - MD5 hash function
-- AES encryption algorithm
+- SHA1 hash function
+- RSA encryption algorithm
 - Key generator
 - HMAC data authentication
 
 ## Compilation
 
-To compile the project, run the following command in terminal:
+To compile the project, run the following commands in terminal:
 
 ```bash
-g++ main.cpp md5.cpp keygen.cpp hmac.cpp -o cryptolib
+mkdir build && cd build
+cmake ..
+make
+./Cryptolib help
 ```
 
 # HMAC (Keyed-Hashing for Message Authentication)
@@ -80,6 +84,61 @@ https://www.youtube.com/watch?v=xV8USnjKGCU&pp=0gcJCfcAhR29_xXO (from 14:15)
 
 Animation of rounds in MD5 (in english):
 https://www.youtube.com/watch?v=5MiMK45gkTY (from 5:53)
+
+
+# SHA-1 Algorithm
+
+SHA-1, like MD5, processes the message in 512-bit (64-byte) chunks but produces a 160-bit (20-byte) digest.
+Append 0x80, followed by as many 0x00 as needed so that length is congruent to 448 mod 512.
+Append the original message length as a 64-bit big-endian integer.
+
+1. Initialize constants: `h0 = 0x67452301`, `h1 = 0xEFCDAB89`, `h2 = 0x98BADCFE`, `h3 = 0x10325476`, `h4 = 0xC3D2E1F0`.
+2. Process each 512-bit chunk:
+   Create an array w[80]. The first 16 words come directly from the chunk (big-endian). Remaining words are generated.
+3. Main loop in 80 rounds:
+   
+   ![image](https://github.com/user-attachments/assets/6910fd92-85fe-49ca-9ed4-c8c2a5189a31)
+5. Add chunk's hash to the result: h[0] += a; h[1] += b; h[2] += c; h[3] += d; h[4] += e;
+
+
+RFC SHA-1: 
+https://datatracker.ietf.org/doc/html/rfc3174
+
+SHA-1 Steps: 
+https://www.slideshare.net/slideshow/sha-1-algorithmppt/256179654
+
+
+# RSA
+
+RSA is an asymmetric (public-key) cryptosystem used for encryption and digital signatures.
+
+1. Key generation:
+   
+   Choose two distinct prime numbers `p` and `q`.
+   
+   Compute `n = p * q`.
+   
+   Compute Euler's totient `φ(n) = (p - 1) * (q - 1)`.
+   
+   Choose public exponent `e` such that `1 < e < φ(n)` and `gcd(e, φ(n)) = 1`.
+
+   Compute private exponent `d = e⁻¹ mod φ(n)`.
+
+   Public key: `(n, e)` and Private key: `(n, d)`.
+
+2. Encryption:
+
+   `c = mᵉ mod n`
+
+3. Decryption:
+
+   `m = cᵈ mod n`
+
+RSA Visual:
+https://legacy.cryptool.org/en/cto/rsa-visual
+
+RFC RSA:
+https://datatracker.ietf.org/doc/html/rfc8017
 
 
 # MD5 Алгоритм
